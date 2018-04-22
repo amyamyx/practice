@@ -1,22 +1,22 @@
 class Card
   attr_reader :value
-  attr_accessor :revealed
+  attr_accessor :face_up
 
   def initialize(value)
     @value = value
-    @revealed = false
+    @face_up = false
   end
 
   def reveal
-    @revealed = true
+    @face_up = true
   end
 
   def hide
-    @revealed = false
+    @face_up = false
   end
 
   def to_s
-    revealed ? @value.to_s : " "
+    face_up ? @value.to_s : " "
   end
 
   def ==(another_card)

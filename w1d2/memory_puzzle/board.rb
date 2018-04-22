@@ -1,5 +1,8 @@
+require 'byebug'
 require_relative 'card'
 class Board
+
+  attr_accessor :grid
 
   def self.empty_grid
     empty_grid = Array.new(4) {Array.new(5)}
@@ -11,18 +14,18 @@ class Board
   end
 
   def populate
+
     cards = []
 
     10.times do |i|
       cards << Card.new(i)
       cards << Card.new(i)
     end
-
     cards.shuffle!
 
-    @grid.each do |row|
-      row.each do |el|
-        el = cards.shift
+    @grid.map! do |row|
+      row.map! do |el|
+        cards.shift
       end
     end
   end
@@ -38,7 +41,7 @@ class Board
   end
 
   def render
-    rows = {"0 | ", "1 | ", "2 | ", "3 | "}
+    rows = ["0 | ", "1 | ", "2 | ", "3 | "]
     @grid.each_with_index do |row, i|
       row.each do |el|
         rows[i].concat("#{el.to_s} | ")
@@ -46,19 +49,22 @@ class Board
     end
 
     puts "    0   1   2   3   4"
-    puts "----------------------"
-    rows.each { |row| puts row}
-    puts "----------------------"
+    puts "  ---------------------"
+    rows.each do |row|
+      puts row
+      puts "  ---------------------"
+    end
   end
 
   def won?
-    grid.all? do |row|
-      row.all? { |card| card.revealed }
+    @grid.all? do |row|
+      row.all? { |card| card.face_up }
     end
   end
 
   def reveal(pos)
-    @grid[pos].reveal
+    row, col = pos
+    @grid[row][col].reveal
   end
-  
+
 end
