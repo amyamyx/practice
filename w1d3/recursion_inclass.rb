@@ -122,11 +122,48 @@ def permutations(arr)
   result
 end
 
-p subsets([]) # => [[]]
-p subsets([1]) # => [[], [1]]
-p subsets([1, 2]) # => [[], [1], [2], [1, 2]]
-p subsets([1, 2, 3])
-# => [[], [1], [2], [1, 2], [3], [1, 3], [2, 3], [1, 2, 3]]
-p permutations([1, 2, 3])
-def greedy_make_change(amount, coins = [25, 9, 10, 1])
+def greedy_make_change(amount, coins = [25, 10, 5, 1])
+  return [] if amount == 0 || coins.empty?
+  change = []
+
+  if amount < coins.first
+    remainder = amount
+    coins2 = coins.drop(1)
+  else
+    change << coins.first
+    remainder = amount - coins.first
+    coins2 = coins
+  end
+
+  change + greedy_make_change(remainder, coins2)
 end
+
+p greedy_make_change(14, [10, 7, 1])
+
+def make_better_change(amount, coins = [25, 10, 5, 1])
+  debugger
+  return [] if amount == 0
+  return nil if coins.all? { |coin| coin > amount}
+  coins = coins.sort.reverse
+
+  best_change = nil
+
+  coins.each_with_index do |coin, i|
+    next if coin > amount
+
+    remainder = amount - coin
+    best_remainder = make_better_change(remainder, coins.drop(i))
+    next if best_remainder.nil?
+
+    this_change = [coin] + best_remainder
+
+    if best_change.nil? || best_change.size > this_change.size
+      best_change = this_change
+    end
+  end
+
+  best_change
+end
+
+
+p make_better_change(24, [10, 7, 1])
